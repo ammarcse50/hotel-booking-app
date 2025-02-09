@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model users {
+  id                         BigInt    @id @default(autoincrement())
+  company_id                 BigInt
+  username                   String    @db.VarChar(200)
+  username_secondary         String?   @db.VarChar(200)
+  email                      String?   @db.VarChar(255)
+  phone                      String?   @db.VarChar(255)
+  password                   String    @db.VarChar(300)
+  role_id                    BigInt?
+  language_id_default_choice Int?
+  is_lock                    Boolean?  @default(false)
+  is_default_user            Boolean   @default(false)
+  created_at                 DateTime  @default(now())
+  created_by                 BigInt
+  updated_at                 DateTime? @db.DateTime(0)
+  updated_by                 BigInt?
+  is_active                  Boolean   @default(true)
+  is_approved                Boolean   @default(false)
+  is_temporary_password      Boolean   @default(false)
+  invoice                    invoice[]
+ 
+
+  @@unique([username, company_id], map: "username")
+  @@index([role_id], map: "ref_role_id")
+}
+model invoice {
+  id                                      BigInt                     @id @default(autoincrement())
+  invoice_status                          invoice_invoice_status     @default(posted)
+  company_id                              Int?
+  serial_number                           Int
+  invoice_code                            String?                    @unique(map: "Invoice_invoice_code_key")
+  invoice_type_id                         BigInt?
+  member_service_type_id                  Int?
+  profile_id                              BigInt?
+  member_no                               String?
+  name                                    String
+  mobile                                  String
+  shipping_address                        String?
+  total_gross_amount                      Decimal?                   @db.Decimal(16, 2)
+  total_discount_percentage               Decimal?                   @db.Decimal(10, 2)
+  total_discount                          Decimal?                   @db.Decimal(16, 2)
+  total_vat_percentage                    Decimal?                   @db.Decimal(10, 2)
+  total_vat                               Decimal?                   @db.Decimal(16, 2)
+  total_net_amount                        Decimal                    @db.Decimal(16, 2)
+  previous_due_collection                 Decimal?                   @db.Decimal(16, 2)
+  deposit_amount                          Decimal?                   @db.Decimal(16, 2)
+  due_amount                              Decimal?                   @db.Decimal(16, 2)
+  so_reference                            String?
+  is_verified                             Boolean?
+  verified_by                             BigInt?
+  verified_at                             DateTime?
+  is_approved                             Boolean?
+  approved_by                             BigInt?
+  approved_at                             DateTime?
+  quotation_reference                     String?
+  remarks                                 String?
+  expire_date                             DateTime?
+  ip_address                              String?
+  pg_order_no                             String?
+  pg_transaction_code                     String?
+  pg_request_status                       invoice_pg_request_status?
+  pg_datetime                             DateTime?
+  created_at                              DateTime                   @default(now())
+  created_by                              BigInt?
+  updated_at                              DateTime?                  @updatedAt
+  updated_by                              BigInt?
+  is_active                               Boolean                    @default(true)
+  is_lock                                 Boolean                    @default(false)
+  is_payment_gateway_scheduler_check      Boolean                    @default(false)
+  payment_gateway_scheduler_check_version String?
+  is_settlement                           Boolean                    @default(false)
+  settlement_date                         DateTime?
+  pg_transaction_charge_amount            Decimal?                   @db.Decimal(18, 3)
+  pg_transaction_charge_in_percentage     Decimal?                   @db.Decimal(18, 3)
+  user                                    users?                     @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  invoice_details                         invoice_details[]
+
+  @@index([invoice_code], map: "Invoice_invoice_code_idx")
+}
+
+model invoice_details {
+  id                  BigInt    @id @default(autoincrement())
+  invoice_id          BigInt
+  item_category_id    Int?
+  item_id             BigInt
+  quantity            Int
+  uom_id              BigInt?
+  unit_price          Decimal?
+  discount_percentage Decimal?
+  discount_amount     Decimal?
+  vat_percentage      Decimal?
+  vat_amount          Decimal?
+  gross_price         Decimal?
+  net_price           Decimal?
+  remarks             String?
+  created_at          DateTime  @default(now())
+  created_by          BigInt?
+  updated_at          DateTime?
+  updated_by          BigInt?
+  is_active           Boolean   @default(true)
+  invoiceId           BigInt?
+  invoices            invoice   @relation(fields: [invoice_id], references: [id])
+
+  @@index([invoice_id])
+}
+
+model config_details {
+  id               Int                   @id @default(autoincrement()) @db.UnsignedInt
+  company_id       Int
+  config_module_id Int
+  config_key       String                @db.VarChar(100)
+  config_value     String                @db.VarChar(255)
+  type             config_details_type
+  status           config_details_status @default(active)
+  remarks          String?               @db.Text
+  created_at       DateTime              @db.DateTime(0)
+  updated_at       DateTime?             @db.DateTime(0)
+}
+
+model configs {
+  id                       Int            @id @default(autoincrement())
+  name                     String         @db.VarChar(120)
+  is_sms_email_for_invoice Int            @default(0)
+  is_sms_send_for_invoice  Int            @default(0)
+  status                   configs_status @default(active)
+  created_at               DateTime       @db.DateTime(0)
+  updated_at               DateTime?      @db.DateTime(0)
+}
+
+model emailscheduler {
+  id            Int       @id @default(autoincrement())
+  email         String?   @db.VarChar(255)
+  name          String?   @db.VarChar(255)
+  total         Decimal?  @db.Decimal(16, 2)
+  invoice_id    BigInt
+  phone         String?   @db.VarChar(20)
+  attemptCount  Int?      @default(0)
+  status        String?   @db.VarChar(50)
+  lastAttemptAt DateTime? @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @default(now()) @updatedAt
+}
+
+model smsscheduler {
+  id       Int    @id @default(autoincrement())
+  content  String
+  contact  String
+  sender   String
+  receiver String
+  total    String
+  userId   String
+  userPass String
+}
+
+enum invoice_invoice_status {
+  posted
+  on_hold
+  paid
+  refunded
+  draft
+  cancel
+}
+
+enum invoice_pg_request_status {
+  pending
+  completed
+}
+
+enum configs_status {
+  active
+  inactive
+}
+
+enum config_details_type {
+  string
+  number
+  array
+  boolean
+  json
+}
+
+enum config_details_status {
+  active
+  inactive
+}
