@@ -1,12 +1,12 @@
 import { deleteRoom, getRoom, setRoom } from '@/app/services/room';
 import { HttpStatusCode } from 'axios';
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 export type Room = {
     id: string;
     name: string;
     capacity: number;
 };
-export const GET = async (request, params) => {
+export const GET = async (request: NextRequest, params: any) => {
     try {
         const roomId = params.params?.id as string
         const room = await getRoom(roomId);
@@ -24,7 +24,7 @@ export const GET = async (request, params) => {
     }
 }
 
-export const PUT = async (request, params) => {
+export const PUT = async (request: NextRequest, params: any) => {
     try {
         const { name, capacity } = await request.json();
         const roomId = params.params?.id as string
@@ -51,17 +51,16 @@ export const PUT = async (request, params) => {
     }
 }
 
-export const DELETE = async (request, params) => {
+export const DELETE = async (params: any) => {
     try {
         const roomId = params.params?.id as string
-
+        console.log("roomId", roomId);
         if (!roomId) {
             return NextResponse.json(
                 { message: "Missing Room Identifier" },
                 { status: HttpStatusCode.NotFound }
             );
         }
-
         const room = await getRoom(roomId);
         if (!room || Object.keys(room).length === 0) {
             return NextResponse.json(

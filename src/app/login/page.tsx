@@ -1,13 +1,11 @@
-"use client"
+"use client";
 import React from "react";
 import { setRoom } from "../services/room";
 
 const LoginPage = () => {
-
-
   return (
     <div className="card bg-base-100 w-full m-auto  max-w-sm shrink-0 shadow-2xl">
-      <form  className="card-body">
+      <form className="card-body">
         <div className="form-control">
           <label className="label">
             <span className="label-text">Email</span>
