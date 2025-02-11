@@ -50,34 +50,35 @@ export const PUT = async (request: NextRequest, params: any) => {
         );
     }
 }
-
-export const DELETE = async (params: any) => {
+export const DELETE = (async (request:NextRequest, params:any) => {
     try {
-        const roomId = params.params?.id as string
-        console.log("roomId", roomId);
+        const roomId =await params.params?.id as string
+         console.log('params',params);
         if (!roomId) {
             return NextResponse.json(
-                { message: "Missing Room Identifier" },
+                { message: "Missing Room Identifier" }, 
                 { status: HttpStatusCode.NotFound }
-            );
-        }
-        const room = await getRoom(roomId);
-        if (!room || Object.keys(room).length === 0) {
-            return NextResponse.json(
-                { message: `Room ${roomId} not found` },
-                { status: HttpStatusCode.NotFound }
-            );
+            );  
         }
 
-        await deleteRoom(roomId);
+        const room = await getRoom(roomId);  
+        if (!room || Object.keys(room).length === 0) {  
+
+            return NextResponse.json(
+                { message: `Room ${roomId} not found` }, 
+                { status: HttpStatusCode.NotFound }
+            );  
+        }  
+
+        await deleteRoom(roomId);  
         return NextResponse.json(
             { message: `Room ${roomId} has been deleted` },
         );
-    } catch (error) {
+    } catch (error) {  
         console.error("cannot delete room:", error)
         return NextResponse.json(
-            { message: error },
+            { message: error }, 
             { status: HttpStatusCode.BadRequest }
-        );
-    }
-}
+        );  
+    }  
+})
