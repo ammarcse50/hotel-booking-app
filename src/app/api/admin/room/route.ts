@@ -1,42 +1,46 @@
-import { NextRequest, NextResponse } from "next/server";
-
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
+import { createCalendar } from "@/app/services/calendar";
+import { NextRequest, NextResponse } from "next/server"
+import { Room } from "./[id]/route";
 import { getAllRooms, setRoom } from "@/app/services/room";
+import { nan } from 'zod';
 
-export type Room = {
-    id: string;
-    name: string;
-    capacity: number;
-};
-
-export const POST = async (request: NextRequest) => {
+export const POST = async (request) => {
     const { name, capacity } = await request.json();
     if (!name || !capacity) {
         return NextResponse.json(
-            { error: "Missing required fields" },
+            { error: 'Missing required fields' },
             { status: 400 }
         );
     }
 
-    const calendarId = nanoid(); // just use a way to get a random Id for now
+    const calendarId = await nanoid();
+     console.log("claendar id is here", calendarId);
     if (!calendarId) {
         return NextResponse.json(
-            { error: "Missing required fields" },
+            { error: 'Missing required fields' },
             { status: 400 }
         );
     }
 
     const room: Room = {
-        id: calendarId,
-        name,
-        capacity: parseInt(capacity, 10),
+      id: calendarId,
+      name,
+      capacity: parseInt(capacity, 10),
     };
 
     await setRoom(room);
-    return NextResponse.json({ room }, { status: 201 });
-};
+    return NextResponse.json(
+        { room },
+        { status: 201 }
+    );
 
-export const GET = async () => {
+}
+
+export const GET = async (request) => {
     const rooms = await getAllRooms();
-    return NextResponse.json({ rooms }, { status: 200 });
-};
+    return NextResponse.json(
+        { rooms },
+        { status: 200 }
+    )
+}

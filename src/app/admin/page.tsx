@@ -1,6 +1,5 @@
 "use client";
 
-import { Room } from "../services/room";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { DataTable } from "@/components/data-table";
@@ -8,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import AddRoomForm from "@/components/AddRoomForm";
 import { columns } from "@/components/columns";
 import { useToast } from "@/hooks/use-toast";
+import { Room } from "../api/admin/room/[id]/route";
 
 const AdminPage = () => {
   const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -78,7 +78,6 @@ const AdminPage = () => {
 
       return newRoom;
     } else {
-      console.error(response);
       Swal.fire({
         position: "top-end",
         icon: "error",
