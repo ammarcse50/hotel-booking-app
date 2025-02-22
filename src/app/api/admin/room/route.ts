@@ -1,9 +1,7 @@
-import { nanoid } from 'nanoid';
-import { createCalendar } from "@/app/services/calendar";
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { Room } from "./[id]/route";
 import { getAllRooms, setRoom } from "@/app/services/room";
-import { nan } from 'zod';
+import { createCalendar } from '@/app/services/calendar';
 
 export const POST = async (request) => {
     const { name, capacity } = await request.json();
@@ -14,8 +12,8 @@ export const POST = async (request) => {
         );
     }
 
-    const calendarId = await nanoid();
-     console.log("claendar id is here", calendarId);
+    const calendarId = await createCalendar(name)
+    console.log("claendar id is here", calendarId);
     if (!calendarId) {
         return NextResponse.json(
             { error: 'Missing required fields' },
@@ -24,9 +22,9 @@ export const POST = async (request) => {
     }
 
     const room: Room = {
-      id: calendarId,
-      name,
-      capacity: parseInt(capacity, 10),
+        id: calendarId,
+        name,
+        capacity: parseInt(capacity, 10),
     };
 
     await setRoom(room);
@@ -37,7 +35,7 @@ export const POST = async (request) => {
 
 }
 
-export const GET = async (request) => {
+export const GET = async () => {
     const rooms = await getAllRooms();
     return NextResponse.json(
         { rooms },

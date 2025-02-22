@@ -1,4 +1,4 @@
-import { parse, formatISO, add } from "date-fns";
+import { formatISO, parse, add } from "date-fns";
 import { initGoogleCalendar } from "../lib/google";
 
 export const listEvent = async (
@@ -36,12 +36,15 @@ export const createEvent = async (
   timeTo: string,
   guests: string[] = []
 ) => {
-  console.log("from room.ts" ,"roomId", roomId, "title", title, "description", description, "date", date, "timeFrom", timeFrom, "timeTo", timeTo, "guests", guests);
   try {
     const googleClient = await initGoogleCalendar();
-    const startTime = parse(`${date} ${timeFrom}`, "yyyy-MM-dd HH:mm", new Date());
+    const startTime = parse(
+      `${date} ${timeFrom}`,
+      "yyyy-MM-dd HH:mm",
+      new Date()
+    );
     const endTime = parse(`${date} ${timeTo}`, "yyyy-MM-dd HH:mm", new Date());
-    console.log("from roomt.ts","startTime", startTime, "endTime", endTime);
+
     const event = {
       summary: title,
       description,
@@ -69,6 +72,7 @@ export const createEvent = async (
       calendarId: roomId,
       requestBody: event,
     });
+
 
     return meeting?.status === 200
       ? { message: "Meeting has been added to the calendar" }
