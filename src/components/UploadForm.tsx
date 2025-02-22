@@ -10,7 +10,7 @@ export default function UploadForm() {
         <span>Upload a Image</span>
         <input type="file" name="file" className="px-2" />
       </label>
-      <button type="submit" className="py-2 px-4 bg-teal-500 rounded">Submit</button>
+      <button type="submit" className="py-2 px-4 max-w-1/4 bg-teal-500 rounded">Submit</button>
     </form>
   );
 }
