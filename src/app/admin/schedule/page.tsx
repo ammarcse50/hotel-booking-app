@@ -3,8 +3,8 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { calendar_v3 as googleCalendar } from "@googleapis/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,

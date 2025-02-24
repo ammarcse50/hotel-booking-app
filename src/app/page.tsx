@@ -1,37 +1,32 @@
-import React from "react";
-import fs from "node:fs/promises";
-import UploadForm from "../components/UploadForm";
-import dynamic from "next/dynamic";
-import MyLazyComponent from "@/components/MyLazyComponent";
+import React from 'react';
+import fs from 'node:fs/promises';
+import MyLazyComponent from '@/components/MyLazyComponent';
+import MeetingInviteForm from '@/components/MeetingInviteForm';
+import { Separator } from '@radix-ui/react-dropdown-menu';
+import { auth } from '../../auth';
 
 const Home = async () => {
-  const files = await fs.readdir("./public/uploads");
-
-  const images = files
-    .filter((file) => file.endsWith(".jpg"))
-    .map((file) => `/uploads/${file}`);
-
-  // const LazyComponentWithoutSSR = dynamic(
-  //   () => import("../components/MyLazyComponent"),
-  //   {
-  //     ssr: false, // Disables server-side rendering for this component
-  //     loading: () => <div>Loading...</div>,
-  //   }
-  // );
-
+  const files = await fs.readdir('./public/uploads');
+  const images = files.map((file) => `/uploads/${file}`);
+  const user = await auth();
+  console.log(user);
   return (
     <main>
-      <UploadForm />
-      <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4">
+      <MeetingInviteForm />
+      <Separator />
+      <div className="text-5xl text-center font-bold  my-10 uppercase">
+        Explore Some Rooms
+      </div>
+      <div className="relative -z-1 grid grid-cols-4 min-w-5xl min-h-5xl gap-4">
         {images.map((image) => (
           <div key={image} className="px-2 h-auto ">
             <MyLazyComponent
+              className="z-0"
               src={image}
               alt={image}
               width={400}
               height={400}
               blurDataUrl={`/public/uploads/${image}`}
-           
             />
           </div>
         ))}

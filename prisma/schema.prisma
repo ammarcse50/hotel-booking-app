@@ -28,11 +28,11 @@ model users {
   is_approved                Boolean   @default(false)
   is_temporary_password      Boolean   @default(false)
   invoice                    invoice[]
- 
 
   @@unique([username, company_id], map: "username")
   @@index([role_id], map: "ref_role_id")
 }
+
 model invoice {
   id                                      BigInt                     @id @default(autoincrement())
   invoice_status                          invoice_invoice_status     @default(posted)
@@ -160,6 +160,24 @@ model smsscheduler {
   total    String
   userId   String
   userPass String
+}
+
+model menus {
+  id               BigInt    @id @default(autoincrement())
+  name             String    @db.VarChar(200)
+  alias            String    @db.VarChar(200)
+  slug             String    @db.VarChar(200)
+  parent_id        Int?
+  path             String?   @db.VarChar(200)
+  icon             String?   @db.VarChar(100)
+  page_title       String?   @db.VarChar(300)
+  breadcrumb_title String?   @db.VarChar(200)
+  display_order    Int?
+  created_at       DateTime? @db.DateTime(0)
+  created_by       BigInt?
+  updated_at       DateTime? @db.DateTime(0)
+  updated_by       BigInt?
+  is_active        Boolean   @default(true)
 }
 
 enum invoice_invoice_status {

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -25,8 +24,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Trash } from "lucide-react";
-import { Room } from "@/types/room";
+
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { Room } from "@/app/api/admin/room/[id]/route";
+import { Button } from "@/components/ui/button";
 
 export default function MeetingInviteForm() {
   const [guests, setGuests] = useState<string[]>([]);
@@ -263,7 +264,7 @@ export default function MeetingInviteForm() {
         </div>
         <Button
           type="submit"
-          className="w-full inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center"
+          className="w-full inline-flex items-center px-5 py-2.5 mt-4 bg-teal-500 sm:mt-6 text-sm font-medium text-center"
           onClick={createMeeting}
           disabled={isMeetingCreation}
         >

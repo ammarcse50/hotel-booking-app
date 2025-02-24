@@ -1,106 +1,39 @@
-"use client";
+import AdminHomeUi from "@/components/AdminHomeUi";
+import React from "react";
+import fs from "node:fs/promises";
+import MyLazyComponent from "@/components/MyLazyComponent";
+import UploadForm from "@/components/UploadForm";
+import { Cross } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { DataTable } from "@/components/data-table";
-import { Separator } from "@/components/ui/separator";
-import AddRoomForm from "@/components/AddRoomForm";
-import { columns } from "@/components/columns";
-import { useToast } from "@/hooks/use-toast";
-import { Room } from "../api/admin/room/[id]/route";
+const AdminPage = async () => {
+  const files = await fs.readdir("./public/uploads");
 
-const AdminPage = () => {
-  const [isAddingRoom, setIsAddingRoom] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [rooms, setRooms] = useState<Room[]>([]);
-  // const toast = useToast();
-  const { toast } = useToast();
-  const handleRoomDeleted = async (roomId: string) => {
-    setRooms(rooms?.filter((room) => room.id !== roomId));
-    const response = await fetch(`/api/admin/room/${roomId}`, {
-      method: "DELETE",
-    });
-    if (response.ok) {
-      const newRoom = await response.json();
-      setRooms((prevRooms) => [...prevRooms, newRoom.room]);
-      toast({
-        duration: 2000,
-        title: "Room added to the list",
-      });
-      return newRoom;
-    } else {
-      toast({
-        duration: 2000,
-        variant: "destructive",
-        title: "Failed to add room",
-      });
-      return null;
-    }
-  };
-  const fetchRooms = async () => {
-    setIsDataLoading(true);
-    const response = await fetch("/api/admin/room");
-    const data = await response.json();
-    setRooms(data.rooms);
-    setIsDataLoading(false);
-  };
-
-  useEffect(() => {
-    fetchRooms();
-  }, []);
-
-  console.log("room is here with details", rooms);
-  const handleRoomAdded = async (formData: FormData): Promise<Room | null> => {
-    setIsAddingRoom(true);
-    const roomData = {
-      name: formData?.get("name"),
-      capacity: formData?.get("capacity"),
-    };
-    // Make the API call to create a new room
-    const response = await fetch("/api/admin/room", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(roomData),
-    });
-    setIsAddingRoom(false);
-    if (response.ok) {
-      const newRoom = await response.json();
-      setRooms((prevRooms) => [...prevRooms, newRoom.room]);
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
-      return newRoom;
-    } else {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Failed to add room",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
-      return null;
-    }
-  };
-
+  const images = files.map((file) => `/uploads/${file}`);
   return (
-    <>
-      <DataTable
-        columns={columns}
-        data={rooms}
-        onRoomDeleted={handleRoomDeleted}
-        isDataLoading={isDataLoading}
-      />
-      <Separator className="my-4" />
-      <AddRoomForm onRoomAdded={handleRoomAdded} isLoading={isAddingRoom} />
-    </>
+    <div>
+      <AdminHomeUi />
+      <UploadForm />
+      <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4">
+        {images.map((image) => (
+          <div key={image} className="relative px-2 h-auto ">
+            <Button
+              // onClick={() => removeImage(image)} // Remove image when clicked
+              className="absolute z-30 right-5 top-5 bg-red-500 text-white p-2 rounded-full"
+            >
+              <Cross scale={30} />
+            </Button>
+            <MyLazyComponent
+              src={image}
+              alt={image}
+              width={400}
+              height={400}
+              blurDataUrl={`/public/uploads/${image}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

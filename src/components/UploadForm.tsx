@@ -1,7 +1,8 @@
 "use client";
 
-import { uploadFile } from "@/app/lib/uploadAction";
+import { uploadFile } from "@/app/lib/actions/uploadAction";
 
+import { Button } from "@/components/ui/button";
 
 export default function UploadForm() {
   return (
@@ -10,7 +11,9 @@ export default function UploadForm() {
         <span>Upload a Image</span>
         <input type="file" name="file" className="px-2" />
       </label>
-      <button type="submit" className="py-2 px-4 max-w-1/4 bg-teal-500 rounded">Submit</button>
+      <Button type="submit" className="py-2 px-4 max-w-1/4 bg-teal-500 rounded">
+        Submit
+      </Button>
     </form>
   );
 }
