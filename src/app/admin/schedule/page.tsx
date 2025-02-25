@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, Suspense } from "react";
-import { calendar_v3 as googleCalendar } from "@googleapis/calendar";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState, Suspense } from 'react';
+import { calendar_v3 as googleCalendar } from '@googleapis/calendar';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { Calendar } from '@/components/ui/calendar';
+  
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
-import { format, startOfWeek } from "date-fns";
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
+import { DayPilot, DayPilotCalendar } from '@daypilot/daypilot-lite-react';
+import { format, startOfWeek } from 'date-fns';
 
 interface RoomEvent {
   id: string;
@@ -34,7 +34,7 @@ const CalendarView = ({
   const [calendar, setCalendar] = useState(null);
   const [events, setEvents] = useState<RoomEvent[]>([]);
 
-  const startWeek = format(startOfWeek(startDate), "yyyy-MM-dd");
+  const startWeek = format(startOfWeek(startDate), 'yyyy-MM-dd');
 
   const fetchEvents = async () => {
     setIsDataLoading(true);
@@ -77,7 +77,7 @@ const CalendarView = ({
       eventId: eventId,
     });
     const response = await fetch(`/api/admin/schedule?${params}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
 
     if (response.ok) {
@@ -91,9 +91,9 @@ const CalendarView = ({
 
   return (
     <DayPilotCalendar
-      viewType={"Week"}
+      viewType={'Week'}
       startDate={startWeek}
-      timeRangeSelectedHandling={"Enabled"}
+      timeRangeSelectedHandling={'Enabled'}
       events={events}
       onEventClick={onEventClick}
       controlRef={setCalendar}
@@ -113,11 +113,11 @@ const DatePicker = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
+        <button
+          variant={'outline'}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            'w-[280px] justify-start text-left font-normal',
+            !date && 'text-muted-foreground'
           )}
         >
           {isDataLoading ? (
@@ -128,10 +128,10 @@ const DatePicker = ({
           ) : (
             <>
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
+              {date ? format(date, 'PPP') : <span>Pick a date</span>}
             </>
           )}
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
@@ -151,7 +151,7 @@ const DatePicker = ({
 
 const ScheduleForm = () => {
   const searchParam = useSearchParams();
-  const roomId = searchParam.get("room")!;
+  const roomId = searchParam.get('room')!;
   const [date, setDate] = React.useState<Date>(new Date());
   const [isDataLoading, setIsDataLoading] = useState(true);
 

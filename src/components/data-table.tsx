@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,16 +15,16 @@ import {
   getFacetedMinMaxValues,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 
-import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown } from 'lucide-react';
+  
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -32,9 +32,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+} from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -45,20 +45,20 @@ interface DataTableProps<TData, TValue> {
 
 const capacityFilterList = [
   {
-    label: "1 - 5",
-    value: "1-5",
+    label: '1 - 5',
+    value: '1-5',
   },
   {
-    label: "5 - 15",
-    value: "5-15",
+    label: '5 - 15',
+    value: '5-15',
   },
   {
-    label: "15 - 50",
-    value: "15-50",
+    label: '15 - 50',
+    value: '15-50',
   },
   {
-    label: "50+",
-    value: "50",
+    label: '50+',
+    value: '50',
   },
 ];
 
@@ -118,24 +118,24 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-2 justify-between">
         <Input
           placeholder="Filter rooms..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm mr-2"
         />
-        {table.getColumn("capacity") && (
+        {table.getColumn('capacity') && (
           <DataTableFacetedFilter
-            column={table.getColumn("capacity")}
+            column={table.getColumn('capacity')}
             title="Filter capacity"
             options={capacityFilterList}
           />
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <button variant="outline" className="ml-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {table
@@ -199,7 +199,7 @@ export function DataTable<TData, TValue>({
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
+                      data-state={row.getIsSelected() && 'selected'}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
@@ -231,22 +231,22 @@ export function DataTable<TData, TValue>({
           {table.getFilteredRowModel().rows.length} rooms found.
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
+          <button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
-          </Button>
-          <Button
+          </button>
+          <button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             Next
-          </Button>
+          </button>
         </div>
       </div>
     </div>

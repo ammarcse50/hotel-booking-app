@@ -3,7 +3,7 @@ import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { Column } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -39,7 +39,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <button variant="outline" size="sm" className="h-8 border-dashed">
           <PlusCircledIcon className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
@@ -75,7 +75,7 @@ export function DataTableFacetedFilter<TData, TValue>({
               </div>
             </>
           )}
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>

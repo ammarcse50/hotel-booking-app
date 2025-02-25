@@ -4,6 +4,7 @@ import { authConfig } from './auth.config';
 import { z } from 'zod';
 import prisma from '@/app/lib/prisma';
 import Credentials from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 
 type CustomUser = {
   id: string;
@@ -71,6 +72,10 @@ export const { auth, signIn, signOut } = NextAuth({
         console.log('Invalid credentials');
         return null;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 });

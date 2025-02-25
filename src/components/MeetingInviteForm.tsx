@@ -27,7 +27,6 @@ import { Trash } from "lucide-react";
 
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Room } from "@/app/api/admin/room/[id]/route";
-import { Button } from "@/components/ui/button";
 
 export default function MeetingInviteForm() {
   const [guests, setGuests] = useState<string[]>([]);
@@ -203,13 +202,13 @@ export default function MeetingInviteForm() {
                       value={newGuest}
                       onChange={(e) => setNewGuest(e.target.value)}
                     />
-                    <Button
+                    <button
                       type="submit"
-                      variant="secondary"
+
                       onClick={addGuest}
                     >
                       Add
-                    </Button>
+                    </button>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -262,7 +261,7 @@ export default function MeetingInviteForm() {
             </SelectContent>
           </Select>
         </div>
-        <Button
+        <button
           type="submit"
           className="w-full inline-flex items-center px-5 py-2.5 mt-4 bg-teal-500 sm:mt-6 text-sm font-medium text-center"
           onClick={createMeeting}
@@ -276,7 +275,7 @@ export default function MeetingInviteForm() {
           ) : (
             "Create Meeting Invite"
           )}
-        </Button>
+        </button>
       </form>
     </div>
   );

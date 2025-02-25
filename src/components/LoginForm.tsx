@@ -1,11 +1,11 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import React from 'react';
 import { useActionState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { authenticate } from '@/app/lib/action';
+import Link from 'next/link';
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -45,9 +45,9 @@ const LoginForm = () => {
         </div>
         <div className="form-control mt-6">
           <input type="hidden" name="redirectTo" value={callbackUrl} />
-          <Button aria-disabled={isPending} className="bg-teal-500  px-3 py-2">
+          <button aria-disabled={isPending} className="bg-teal-500  px-3 py-2">
             Login
-          </Button>
+          </button>
           <div
             className="flex h-8 items-end space-x-1"
             aria-live="polite"
@@ -74,6 +74,7 @@ const LoginForm = () => {
             )}
           </div>
         </div>
+        <p className='text-center'>New User? please <Link href={"/signup"} className='text-teal-700'>Signup</Link></p>
       </form>
     </div>
   );

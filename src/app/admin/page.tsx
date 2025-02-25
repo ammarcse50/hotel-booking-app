@@ -1,15 +1,14 @@
-import AdminHomeUi from "@/components/AdminHomeUi";
-import React from "react";
-import fs from "node:fs/promises";
-import MyLazyComponent from "@/components/MyLazyComponent";
-import UploadForm from "@/components/UploadForm";
-import { Cross } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import AdminHomeUi from '@/components/AdminHomeUi';
+import React from 'react';
+import fs from 'node:fs/promises';
+import MyLazyComponent from '@/components/MyLazyComponent';
+import UploadForm from '@/components/UploadForm';
+import Crossbutton from '@/components/CrossButton';
 
 const AdminPage = async () => {
-  const files = await fs.readdir("./public/uploads");
-
+  const files = await fs.readdir('./public/uploads');
   const images = files.map((file) => `/uploads/${file}`);
+  // console.log(images[0].split('/').pop());
   return (
     <div>
       <AdminHomeUi />
@@ -17,12 +16,7 @@ const AdminPage = async () => {
       <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4">
         {images.map((image) => (
           <div key={image} className="relative px-2 h-auto ">
-            <Button
-              // onClick={() => removeImage(image)} // Remove image when clicked
-              className="absolute z-30 right-5 top-5 bg-red-500 text-white p-2 rounded-full"
-            >
-              <Cross scale={30} />
-            </Button>
+            <Crossbutton imgPath={image.split('/').pop()} />
             <MyLazyComponent
               src={image}
               alt={image}

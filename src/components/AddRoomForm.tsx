@@ -1,8 +1,7 @@
-"use client";
-
-import { Room } from "@/app/services/room";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Room } from '@/app/services/room';
+import { ReloadIcon } from '@radix-ui/react-icons';
+  
 interface AddRoomFormProps {
   onRoomAdded: (formData: FormData) => Promise<Room | null>;
   isLoading: boolean;
@@ -61,20 +60,20 @@ const AddRoomForm: React.FC<AddRoomFormProps> = ({
             </div>
           </div>
           {isLoading ? (
-            <Button
+            <button
               disabled
               className="inline-flex bg-teal-500 items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center"
             >
               <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
               Please wait
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               type="submit"
               className="inline-flex bg-teal-600 items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center"
             >
               Add room
-            </Button>
+            </button>
           )}
         </form>
       </div>

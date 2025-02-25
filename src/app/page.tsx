@@ -1,19 +1,14 @@
 import React from 'react';
 import fs from 'node:fs/promises';
 import MyLazyComponent from '@/components/MyLazyComponent';
-import MeetingInviteForm from '@/components/MeetingInviteForm';
-import { Separator } from '@radix-ui/react-dropdown-menu';
 import { auth } from '../../auth';
 
 const Home = async () => {
   const files = await fs.readdir('./public/uploads');
   const images = files.map((file) => `/uploads/${file}`);
   const user = await auth();
-  console.log(user);
   return (
     <main>
-      <MeetingInviteForm />
-      <Separator />
       <div className="text-5xl text-center font-bold  my-10 uppercase">
         Explore Some Rooms
       </div>

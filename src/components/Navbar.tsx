@@ -1,64 +1,34 @@
-'use client';
+import React from 'react'
+import NavLinks from './NavLinks'
+import { signOut } from '../../auth';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import React from 'react';
+const Navbar = ({ user, menus }) => {
+    //  console.log("user of navbar", user.user.email);
+     const authUser = user?.user?.email;
+    return (
+        <div className='flex justify-between'>
 
-const Navbar = ({ user }) => {
-  const pathname = usePathname();
-  console.log('pathname', pathname);
-  console.log('navbar user', user);
+            <NavLinks menus={menus} />
 
-  return (
-    <div className="flex justify-between">
-      <div className="flex space-x-4">
-        <h1>Logo</h1>
-        <Link className={`${pathname === '/' ? 'active' : ''}`} href={'/'}>
-          Home
-        </Link>
-        <Link
-          className={`${pathname === '/admin' ? 'active' : ''}`}
-          href={'/admin'}
-        >
-          Admin
-        </Link>
-        <Link
-          className={`${pathname === '/admin/schedule' ? 'active' : ''}`}
-          href={'/admin/schedule'}
-        >
-          Schedule
-        </Link>
-        <Link
-          className={`${pathname === '/contact' ? 'active' : ''}`}
-          href={'/'}
-        >
-          Contact
-        </Link>
-      </div>
-      <div className="flex space-x-4">
-        {user ? (
-          <Link
-            className={`${pathname === '/login' ? 'active' : ''}`}
-            href={'/login'}
-          >
-            Login
-          </Link>
-        ) : (
-          <button
-          // className={`${pathname === '/login' ? 'active' : ''}`}
-          // onClick={async () => await signOut}
-          >
-            Logout
-          </button>
-        )}
-        <Link
-          className={`${pathname === '/signup' ? 'active' : ''}`}
-          href={'/signup'}
-        >
-          SignUp
-        </Link>
-      </div>
-    </div>
-  );
-};
+            <div className='flex'>
+                {authUser ? <form
+                    action={async () => {
+                        'use server';
+                        await signOut({ redirectTo: '/' });
+                    }}
+                >
+                    <button className="flex h-[20px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
 
-export default Navbar;
+                        <div className="hidden md:block">Sign Out</div>
+                    </button>
+                </form> : <Link className="flex h-[20px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3" href={"/login"}>Sign in</Link>}
+
+                <Link href={"/signup"} className="flex h-[20px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">Sign Up</Link>
+
+
+            </div>
+        </div>
+    )
+}
+
+export default Navbar

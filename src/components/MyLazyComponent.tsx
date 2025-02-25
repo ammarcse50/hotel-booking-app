@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
-import Image from "next/image";
-import cn from "classnames"; // Assuming you are using classnames to handle conditional classes
+'use client';
+import { useState } from 'react';
+import Image from 'next/image';
+import cn from 'classnames'; // Assuming you are using classnames to handle conditional classes
 
 interface CustomImageComponentProps {
   src: string;
@@ -10,7 +10,7 @@ interface CustomImageComponentProps {
   width?: number;
   height?: number;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onLoad?: () => void;
@@ -46,17 +46,17 @@ function MyLazyComponent({
   const [srcState, setSrcState] = useState(src);
 
   return (
-    <div className={cn("flex justify-center items-center", className)}>
+    <div className={cn('flex justify-center items-center', className)}>
       <Image
         onClick={onClick}
         alt={alt}
         style={{
-          transform: "translate3d(0, 0, 0)",
-          width: "100%",
-          height: "auto",
+          transform: 'translate3d(0, 0, 0)',
+          width: '100%',
+          height: 'auto',
         }}
         className="brightness-90 group-hover:brightness-110 rounded-lg transition transform"
-        onError={() => setSrcState("/place-holder.webp")} // fallback image
+        onError={() => setSrcState('/place-holder.webp')} // fallback image
         blurDataURL={blurDataUrl}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -97,7 +97,7 @@ function MyLazyComponent({
             ></path>
           </svg>
         </div>
-      )}{" "}
+      )}{' '}
       {/* Optional loading spinner/indicator */}
     </div>
   );
