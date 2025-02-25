@@ -157,7 +157,7 @@ const ScheduleForm = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+      <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-teal-400">
         Review Meeting Room Schedule
       </h2>
       <div className="flex flex-col items-center space-y-4">

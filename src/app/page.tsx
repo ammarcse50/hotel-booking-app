@@ -6,7 +6,6 @@ import { auth } from '../../auth';
 const Home = async () => {
   const files = await fs.readdir('./public/uploads');
   const images = files.map((file) => `/uploads/${file}`);
-  const user = await auth();
   return (
     <main>
       <div className="text-5xl text-center font-bold  my-10 uppercase">

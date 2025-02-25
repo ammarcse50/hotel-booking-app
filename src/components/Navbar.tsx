@@ -6,7 +6,7 @@ const Navbar = ({ user, menus }) => {
     //  console.log("user of navbar", user.user.email);
      const authUser = user?.user?.email;
     return (
-        <div className='flex justify-between'>
+        <div className='flex justify-between items-center'>
 
             <NavLinks menus={menus} />
 

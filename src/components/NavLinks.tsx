@@ -21,8 +21,8 @@ const Navbar = ({ menus }: any) => {
 
 
   return (
-    <div className="flex justify-between">
-      <div className="flex space-x-4">
+    <div className="flex justify-between ">
+      <div className="flex items-center space-x-4">
         <h1>
           <Image
             src={'/hotel.jpg'}
@@ -38,13 +38,13 @@ const Navbar = ({ menus }: any) => {
           <div key={menu.id} className="relative group">
             <Link
               key={menu.id}
-              className={`${pathname === menu.path ? 'active' : ''} font-bold`}
+              className={`${pathname === menu.path ? 'active' : ''} flex h-[20px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3`}
               href={menu.path}
             >
               {menu.name}
             </Link>
             {groupedMenus[menu.id] && (
-              <div className="absolute left-0 top-5 mt-2 bg-white shadow-lg rounded-md opacity-0 group-hover:opacity-100 group-hover:block hidden">
+              <div className="absolute left-0 top-4 mt-2 bg-white shadow-lg rounded-md opacity-0 group-hover:opacity-100 group-hover:block hidden">
                 {groupedMenus[menu.id].map((childMenu: any) => (
                   <Link key={childMenu.id} href={childMenu.path} className="block px-4 py-2">
                     {childMenu.name}
@@ -56,26 +56,7 @@ const Navbar = ({ menus }: any) => {
         ))}
       </div>
 
-      {/* <div className="flex space-x-4">
-        {user ? (
-          <form action={async()=>{signOut()}}>
-            <button className='font-bold' type="submit">Sign Out</button>
-          </form>
-        ) : (
-          <Link
-            className={`font-bold ${pathname === '/login' ? 'active' : ''} font-bold`}
-            href={'/login'}
-          >
-            Login
-          </Link>
-        )}
-        <Link
-          className={`${pathname === '/signup' ? 'active' : ''}`}
-          href={'/signup'}
-        >
-          SignUp
-        </Link>
-      </div> */}
+
     </div>
   );
 };

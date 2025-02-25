@@ -4,6 +4,7 @@ import './globals.css';
 import { auth, signOut } from '../../auth';
 import prisma from './lib/prisma';
 import Navbar from '@/components/Navbar';
+import BreadCrumb from '@/components/BreadCrumb';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,12 +27,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // auth checking
-  const user =await auth();
-  console.log("i am from layout",user);
+  const user = await auth();
+
 
   // fetching menus
 
   const menus = await prisma.menus.findMany();
+
+  // slug fetch
+
+  
 
   return (
     <html lang="en">
@@ -40,6 +45,7 @@ export default async function RootLayout({
       >
         <main className="max-w-7xl mx-auto min-w-[300px] p-4">
           <Navbar user={user} menus={menus} />
+          <BreadCrumb menus={menus}/>
           {children}
         </main>
       </body>
