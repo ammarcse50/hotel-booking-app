@@ -1,104 +1,70 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
-import { DataTable } from '@/components/data-table';
-import { Separator } from '@/components/ui/separator';
-import AddRoomForm from '@/components/AddRoomForm';
-import { columns } from '@/components/columns';
-import { useToast } from '@/hooks/use-toast';
-import { Room } from '@/app/api/admin/room/[id]/route';
+import { useState } from 'react';
+import { Input } from "@/components/ui/input";
 
 const AdminHomeUi = () => {
-  const [isAddingRoom, setIsAddingRoom] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [rooms, setRooms] = useState<Room[]>([]);
-  // const toast = useToast();
-  const { toast } = useToast();
-  const handleRoomDeleted = async (roomId: string) => {
-    setRooms(rooms?.filter((room) => room.id !== roomId));
-    const response = await fetch(`/api/admin/room/${roomId}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
-      const newRoom = await response.json();
-      setRooms((prevRooms) => [...prevRooms, newRoom.room]);
-      toast({
-        duration: 2000,
-        title: 'Room added to the list',
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+  };
+
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const capacity = form.capacity.value;
+    if (!name || !capacity || !file) {
+      console.log('All fields are required.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('capacity', capacity);
+    formData.append('file', file);
+
+
+    console.log("Formdata", formData);
+
+    try {
+      const response = await fetch('/api/mydb/addroom', {
+        method: 'POST',
+        body: formData,
       });
-      return newRoom;
-    } else {
-      toast({
-        duration: 2000,
-        variant: 'destructive',
-        title: 'Failed to add room',
-      });
-      return null;
+      const data = await response.json();
+      console.log('Success:', data);
+
+      if (response.ok) {
+        form.reset();
+        setFile(null);
+      }
+      if (!response.ok) {
+        throw new Error('Failed to upload data');
+      }
+
+
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
-  const fetchRooms = async () => {
-    setIsDataLoading(true);
-    const response = await fetch('/api/admin/room');
-    const data = await response.json();
-    setRooms(data.rooms);
-    setIsDataLoading(false);
-  };
 
-  useEffect(() => {
-    fetchRooms();
-  }, []);
-
-  console.log('room is here with details', rooms);
-  const handleRoomAdded = async (formData: FormData): Promise<Room | null> => {
-    setIsAddingRoom(true);
-    const roomData = {
-      name: formData?.get('name'),
-      capacity: formData?.get('capacity'),
-    };
-    // Make the API call to create a new room
-    const response = await fetch('/api/admin/room', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(roomData),
-    });
-    setIsAddingRoom(false);
-    if (response.ok) {
-      const newRoom = await response.json();
-      setRooms((prevRooms) => [...prevRooms, newRoom.room]);
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Your work has been saved',
-        showConfirmbutton: false,
-        timer: 1500,
-      });
-
-      return newRoom;
-    } else {
-      Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: 'Failed to add room',
-        showConfirmbutton: false,
-        timer: 1500,
-      });
-
-      return null;
-    }
-  };
   return (
     <>
-      <DataTable
-        columns={columns}
-        data={rooms}
-        onRoomDeleted={handleRoomDeleted}
-        isDataLoading={isDataLoading}
-      />
-      <Separator className="my-4" />
-      <AddRoomForm onRoomAdded={handleRoomAdded} isLoading={isAddingRoom} />
+      <form onSubmit={handleOnSubmit} className=''>
+        <Input type="text" name="name" placeholder="Room Name" className='m-3' />
+        <Input type="number" name="capacity" placeholder="Capacity" className='m-3' />
+
+        <label>
+          <span>Upload an Image</span>
+          <input type="file" name="file" onChange={handleFileChange} className="px-2" />
+        </label>
+
+        <button type="submit" className="px-4 py-2 bg-teal-500 rounded">
+          Submit
+        </button>
+      </form>
     </>
   );
 };

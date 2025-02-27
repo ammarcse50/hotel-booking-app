@@ -20,12 +20,12 @@ export default function BreadCrumb({ menus }) {
                 if (slug === menu.slug) {
                     breadcrumbTrail.push(menu);
                     if (menu.parent_id) {
-                        console.log("menu parent_id", menu.parent_id);
+                        // console.log("menu parent_id", menu.parent_id);
 
                         const parentMenu = menus.find((parent) => Number(parent.id) === menu.parent_id);
 
                         if (parentMenu) {
-                            console.log("parentmenu", parentMenu);
+                            // console.log("parentmenu", parentMenu);
 
                             findMenu(parentMenu.slug);
                         }
@@ -40,7 +40,7 @@ export default function BreadCrumb({ menus }) {
     };
 
     const breadcrumbs = getBreadcrumbs(menus, pathname);
-    console.log("check paths", breadcrumbs);
+    // console.log("check paths", breadcrumbs);
 
     return (
         <div className="text-teal-400 my-2">
@@ -49,10 +49,10 @@ export default function BreadCrumb({ menus }) {
                     {breadcrumbs.map((menu) => (
                         <li key={menu.id}>
                             {
-                                  <span>
-                                   
+                                <span>
+
                                     <Link href={menu.path}>{menu.breadcrumb_title}</Link> {">"}
-                                   </span>
+                                </span>
                             }
                         </li>
                     ))}

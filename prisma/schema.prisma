@@ -180,6 +180,13 @@ model menus {
   is_active        Boolean   @default(true)
 }
 
+model room {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(500)
+  capacity Int
+  img      String @db.VarChar(500)
+}
+
 enum invoice_invoice_status {
   posted
   on_hold

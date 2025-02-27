@@ -1,14 +1,16 @@
 import React from 'react'
-import NavLinks from './NavLinks'
+import NavLinkDropDown from './NavLinkDropDown'
 import { signOut } from '../../auth';
 import Link from 'next/link';
+import SearchBox from './SearchBox';
 const Navbar = ({ user, menus }) => {
     //  console.log("user of navbar", user.user.email);
-     const authUser = user?.user?.email;
+    const authUser = user?.user?.email;
     return (
         <div className='flex justify-between items-center'>
 
-            <NavLinks menus={menus} />
+            <NavLinkDropDown menus={menus} />
+
 
             <div className='flex'>
                 {authUser ? <form

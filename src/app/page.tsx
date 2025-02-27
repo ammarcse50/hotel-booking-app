@@ -1,29 +1,26 @@
 import React from 'react';
 import fs from 'node:fs/promises';
-import MyLazyComponent from '@/components/MyLazyComponent';
-import { auth } from '../../auth';
+
+import prisma from '@/lib/db';
+import RoomCard from '@/components/RoomCard';
+import HomeCompo from '@/components/HomeCompo';
 
 const Home = async () => {
   const files = await fs.readdir('./public/uploads');
   const images = files.map((file) => `/uploads/${file}`);
+  // console.log(images[0].split('/').pop());
+  console.log("images", images);
+  const rooms = await prisma.room.findMany();
+
+
   return (
     <main>
-      <div className="text-5xl text-center font-bold  my-10 uppercase">
+      <div className="text-5xl text-center font-bold  my-10 uppercase flex justify-between">
         Explore Some Rooms
       </div>
-      <div className="relative -z-1 grid grid-cols-4 min-w-5xl min-h-5xl gap-4">
-        {images.map((image) => (
-          <div key={image} className="px-2 h-auto ">
-            <MyLazyComponent
-              className="z-0"
-              src={image}
-              alt={image}
-              width={400}
-              height={400}
-              blurDataUrl={`/public/uploads/${image}`}
-            />
-          </div>
-        ))}
+      <HomeCompo rooms={rooms} images={images} />
+
+      <div>
       </div>
     </main>
   );
