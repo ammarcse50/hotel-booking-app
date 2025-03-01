@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { auth} from '../../auth';
+import { auth } from '../../auth';
 import prisma from './lib/prisma';
 import Navbar from '@/components/Navbar';
 import BreadCrumb from '@/components/BreadCrumb';
@@ -36,7 +36,7 @@ export default async function RootLayout({
       >
         <main className="max-w-7xl mx-auto min-w-[300px] p-4">
           <Navbar user={user} menus={menus} />
-          <BreadCrumb menus={menus}/>
+          <BreadCrumb menus={menus} />
           {children}
         </main>
       </body>

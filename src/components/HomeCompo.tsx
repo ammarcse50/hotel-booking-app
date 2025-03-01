@@ -42,7 +42,7 @@ const HomeCompo = ({ rooms, images }) => {
     };
 
     const handleSuggestionClick = (name: string) => {
-        setSearchQuery(name); // Set the selected suggestion in the input field
+        setSearchQuery(name);
         setSuggestions([]);
 
 
@@ -50,12 +50,12 @@ const HomeCompo = ({ rooms, images }) => {
     }
     return (
         <div> <h2 className='text-center mt-20 font-bold text-3xl text-teal-500'>All Rooms </h2>
-            <div className="relative">
+            <div className="relative flex justify-center">
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="p-3 w-full text-black border rounded-lg mb-4 "
+                    className="p-3 w-1/2 text-black border border-black rounded-lg mb-4 "
                     placeholder="Search for items or categories..."
                 />
                 {loading && <p>Loading...</p>}

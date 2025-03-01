@@ -2,7 +2,6 @@ import React from 'react'
 import NavLinkDropDown from './NavLinkDropDown'
 import { signOut } from '../../auth';
 import Link from 'next/link';
-import SearchBox from './SearchBox';
 const Navbar = ({ user, menus }) => {
     //  console.log("user of navbar", user.user.email);
     const authUser = user?.user?.email;

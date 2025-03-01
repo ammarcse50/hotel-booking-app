@@ -10,8 +10,6 @@ export default function BreadCrumb({ menus }) {
 
     const getBreadcrumbs = (menus: any, path: any) => {
 
-        console.log("menus", menus);
-        console.log("path", path);
         const lastPathPart = path.split("/").pop();
 
         const findMenu = (slug: string) => {

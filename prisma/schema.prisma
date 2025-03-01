@@ -218,3 +218,9 @@ enum config_details_status {
   active
   inactive
 }
+
+model zodit{
+  id Int @id @default(autoincrement())
+  html String 
+
+}

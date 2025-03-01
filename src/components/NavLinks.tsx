@@ -11,12 +11,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { buildMenu } from './build-menu'; // Import the buildMenu function
+import { ArrowDown } from 'lucide-react';
 
 const Navbar = ({ menus }: any) => {
   const menuStructure = buildMenu(menus);
 
   console.log("menuITEMS", menus);
- 
+
 
   const renderMenu = (menu: any) => {
     return menu.map((menuItem: any) => {
@@ -30,7 +31,7 @@ const Navbar = ({ menus }: any) => {
 
                   <NavigationMenuItem>
                     <NavigationMenuTrigger >
-                      {menuItem.name}
+                      {menuItem.name} <ArrowDown size={15} className='text-black' />
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       {renderMenu(menuItem.children)}
@@ -49,9 +50,9 @@ const Navbar = ({ menus }: any) => {
               </NavigationMenu>
             ) : (
               <Link href={menuItem.path} passHref>
-                
-                  {menuItem.alias || menuItem.name}
-                
+
+                {menuItem.alias || menuItem.name}
+
               </Link>
             )
           }
