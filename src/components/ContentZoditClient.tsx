@@ -4,7 +4,10 @@ import React, { useState, useRef, useMemo, use, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
+
+    DialogFooter,
 
     DialogTitle,
 
@@ -18,7 +21,7 @@ const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 const CrudZoditBtn = ({ contentZodit }) => {
     const editor = useRef(null); //declared a null value 
     const [content, setContent] = useState(""); //declare using state
-    const dialougeTriggerRef = useRef(null);
+    const dialougeTriggerRef = useRef<HTMLInputElement>(null)
 
 
 
@@ -123,10 +126,10 @@ const CrudZoditBtn = ({ contentZodit }) => {
                     {contentZodit.map((item) => (
                         <tr key={item.id} className="hover:bg-gray-50 transition-colors ">
                             <td className="py-3 px-4 text-sm text-gray-700">{item.id}</td>
-                            <td className="py-3 px-4 mt-20 text-sm text-gray-700 relative">
+                            <td className="py-3 px-4 mt-20 text-sm text-gray-700">
                                 {editId === item.id ? (
 
-                                    <Dialog>
+                                    <Dialog >
 
                                         <DialogTitle></DialogTitle>
                                         <DialogTrigger ref={dialougeTriggerRef}>
@@ -136,7 +139,7 @@ const CrudZoditBtn = ({ contentZodit }) => {
 
                                         </DialogTrigger>
 
-                                        <DialogContent className="">
+                                        <DialogContent className="bg-gray-200">
                                             <div className="">
 
                                                 <div className="h-[70vh] w-[70vh]">
@@ -156,6 +159,7 @@ const CrudZoditBtn = ({ contentZodit }) => {
                                             </div>
 
                                         </DialogContent>
+                                      
                                     </Dialog>
 
                                 ) : (
