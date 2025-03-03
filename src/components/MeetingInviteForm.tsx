@@ -54,9 +54,11 @@ export default function MeetingInviteForm() {
       timeTo: timeToElement?.value,
     });
 
-    const response = await fetch(`/api/schedule?${params}`);
-    const data = await response.json();
-    setRooms(data.rooms);
+    const response = await fetch(`/api/mydb/getrooms`, { method: "GET" }).then(res => res.json()).then(data => setRooms(data.rooms));
+    // console.log(response, "from get available rooms");
+    // const data = await response.json();
+
+    // setRooms(data.rooms);
     setIsDataLoading(false);
   };
 
@@ -72,7 +74,7 @@ export default function MeetingInviteForm() {
     const descriptionElement = document.getElementById(
       "description"
     ) as HTMLInputElement;
-
+    console.log(timeFromElement.value, timeToElement.value, dateElement.value, titleElement.value);
     if (
       !dateElement.value ||
       !titleElement.value ||
@@ -90,40 +92,71 @@ export default function MeetingInviteForm() {
 
     const meetingData = {
       title: titleElement?.value,
-      date: dateElement?.value,
-      timeFrom: timeFromElement?.value,
-      timeTo: timeToElement?.value,
+      meeting_date: dateElement?.value,
+      startTime: timeFromElement?.value,
+      endTime: timeToElement?.value,
       description: descriptionElement?.value,
       guests: guests,
       roomId: selectedRoom,
     };
 
-    const response = await fetch("/api/schedule", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(meetingData),
-    });
+    console.log(meetingData);
 
-    setIsMeetingCreation(false);
-    const result = await response.json();
+    try {
+      const response = await fetch("/api/mydb/createMeeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(meetingData),
+      });
 
-    // Reset form fields
-    setGuests([]);
-    setNewGuest("");
-    setSelectedRoom("");
+      if (response.ok) {
+        toast({
+          title: "Meeting created successfully",
+          description: "Meeting created successfully",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Meeting creation failed",
+          description: "Something went wrong",
+        });
+      }
 
-    titleElement.value = "";
-    dateElement.value = "";
-    timeFromElement.value = "";
-    timeToElement.value = "";
-    descriptionElement.value = "";
+    } catch (error) {
 
-    toast({
-      title: "Meeting created successfully",
-      description: result.event.message,
-    });
+      console.log(error);
+
+
+    }
+
+    // const response = await fetch("/api/schedule", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(meetingData),
+    // });
+
+    // setIsMeetingCreation(false);
+    // const result = await response.json();
+
+    // // Reset form fields
+    // setGuests([]);
+    // setNewGuest("");
+    // setSelectedRoom("");
+
+    // titleElement.value = "";
+    // dateElement.value = "";
+    // timeFromElement.value = "";
+    // timeToElement.value = "";
+    // descriptionElement.value = "";
+
+    // toast({
+    //   title: "Meeting created successfully",
+    //   description: result.event.message,
+    // });
   };
 
   const addGuest = (e: React.FormEvent) => {
@@ -141,6 +174,13 @@ export default function MeetingInviteForm() {
     setGuests(updatedGuests);
     checkAvailableRoom(updatedGuests.length);
   };
+
+
+
+
+
+
+
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-8">

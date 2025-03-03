@@ -10,7 +10,7 @@ const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 /*functions*/
 export default function Zodit() {
     const editor = useRef(null); //declared a null value 
-    const [content, setContent] = useState("Worlds best html page"); //declare using state
+    const [content, setContent] = useState("Post Your Data To DB"); //declare using state
 
 
     // send html to db
@@ -34,20 +34,33 @@ export default function Zodit() {
 
         // send html to db
 
-        const response = await fetch('http://localhost:3000/api/zodit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content }),
-        });
+        try {
+            const response = await fetch('http://localhost:3000/api/zodit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content }),
+            });
 
-        const data = await response.json();
-        console.log(data);
+            const data = await response.json();
+            console.log(data);
 
-        if (data.status === "success") {
-            alert("Data saved successfully");
+            if (data.status === "success") {
+                alert("Data saved successfully");
+                setContent("")
+            }
+            else {
+                alert("Data not saved");
+
+            }
+
+
+        } catch (error) {
+            alert("Error saving data");
+            console.log(error);
         }
+
 
 
 

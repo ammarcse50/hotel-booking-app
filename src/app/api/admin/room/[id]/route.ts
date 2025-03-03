@@ -5,6 +5,7 @@ export type Room = {
     id: string;
     name: string;
     capacity: number;
+    file: String
 };
 export const GET = async (request: NextRequest, params: any) => {
     try {

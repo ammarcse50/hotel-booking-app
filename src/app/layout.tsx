@@ -5,6 +5,7 @@ import { auth } from '../../auth';
 import prisma from './lib/prisma';
 import Navbar from '@/components/Navbar';
 import BreadCrumb from '@/components/BreadCrumb';
+import { exo2, montserrat } from '@/components/Font_exo2';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,7 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${exo2.className} antialiased`}
       >
         <main className="max-w-7xl mx-auto min-w-[300px] p-4">
           <Navbar user={user} menus={menus} />

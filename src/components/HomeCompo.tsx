@@ -7,7 +7,7 @@ interface SearchResult {
     name: string;
     capacity: number;
 }
-const HomeCompo = ({ rooms, images }) => {
+const HomeCompo = ({ hotels, images }) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<SearchResult[]>([]);
@@ -56,7 +56,7 @@ const HomeCompo = ({ rooms, images }) => {
                     value={searchQuery}
                     onChange={handleSearchChange}
                     className="p-3 w-1/2 text-black border border-black rounded-lg mb-4 "
-                    placeholder="Search for items or categories..."
+                    placeholder="Search by room name"
                 />
                 {loading && <p>Loading...</p>}
                 {!loading && suggestions.length > 0 && (
@@ -78,12 +78,12 @@ const HomeCompo = ({ rooms, images }) => {
             {
 
 
-                selectedRoom && <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
-                    {selectedRoom.map((room) => {
-                        const imgPath = images.find((image) => image.split('/').pop() === room.img);
+                hotels && <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
+                    {hotels.map((hotel) => {
+                        const imgPath = images.find((image) => image.split('/').pop() === hotel.company_logo);
                         return (
-                            <div key={room.id} className="relative px-2 h-auto">
-                                <RoomCard name={room.name} capacity={room.capacity} img={imgPath} />
+                            <div key={hotel.id} className="relative px-2 h-auto">
+                                <RoomCard name={hotel.name} address={hotels.address} img={imgPath} />
                             </div>
                         );
                     })}
@@ -95,7 +95,7 @@ const HomeCompo = ({ rooms, images }) => {
                 selectedRoom.length === 0 &&
 
                 <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
-                    {rooms.map((room) => {
+                    {hotels.map((room) => {
                         const imgPath = images.find((image) => image.split('/').pop() === room.img);
                         return (
                             <div key={room.id} className="relative px-2 h-auto">

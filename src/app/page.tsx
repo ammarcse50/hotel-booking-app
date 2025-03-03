@@ -5,13 +5,13 @@ import prisma from '@/lib/db';
 import HomeCompo from '@/components/HomeCompo';
 import PaginationBar from '@/components/PaginationBar';
 interface HomeProps {
-  searchParams: { page?: string | number};
+  searchParams: { page?: string | number };
 }
 const Home = async ({
   searchParams: { page = "1" },
 }: HomeProps) => {
-  const files = await fs.readdir('./public/uploads');
-  const images = files.map((file) => `/uploads/${file}`);
+  const files = await fs.readdir('./public/uploads/company_logo');
+  const images = files.map((file) => `/uploads/company_logo/${file}`);
   // console.log(images[0].split('/').pop());
   // const page = 1;
   const currrentPage = parseInt(page);
@@ -23,7 +23,7 @@ const Home = async ({
   //  step2: number of item per page
   const totalPages = Math.ceil(totalItemCount / itemsPerPage);
   // page count: totalItems / itemPerPage
-  const rooms = await prisma.room.findMany({
+  const hotels = await prisma.companies.findMany({
     orderBy: { id: "desc" },
     skip:
       (currrentPage - 1) * itemsPerPage +
@@ -34,11 +34,11 @@ const Home = async ({
   return (
     <main>
 
-      <HomeCompo rooms={rooms} images={images} />
+      <HomeCompo hotels={hotels} images={images} />
       <div className='flex justify-center'>
 
         {totalPages > 1 && (
-          <PaginationBar currrentPage={currrentPage}  totalPages={totalPages} />
+          <PaginationBar currrentPage={currrentPage} totalPages={totalPages} />
         )}
       </div>
     </main>

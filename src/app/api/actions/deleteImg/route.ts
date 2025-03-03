@@ -1,26 +1,59 @@
-import { revalidatePath } from 'next/cache';
-import { NextRequest } from 'next/server';
-import fs from 'node:fs/promises';
-import path from 'path';
+import { NextResponse } from "next/server";
+import fs from "node:fs/promises";
+import path from "node:path";
+import prisma from "@/lib/db";
 
-export async function DELETE(req: NextRequest) {
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-
+export async function DELETE(request: Request) {
   try {
-    const { imgPath }: { imgPath: string } = await req.json();
-    const filePath = path.join(uploadDir, imgPath);
+    const { imgUrl, companyId } = await request.json();
+    console.log(imgUrl, companyId);
+    if (!imgUrl || !companyId) {
+      return NextResponse.json(
+        { error: "Image URL and Company ID are required" },
+        { status: 400 }
+      );
+    }
+
+    const fileName = imgUrl.split("/").pop();
+
+    if (!fileName) {
+      return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
+    }
+
+    const filePath = path.join(
+      process.cwd(),
+      "public",
+      "uploads",
+      "company_logo",
+      fileName
+    );
 
     try {
       await fs.access(filePath);
-    } catch (error) {
-      return Response.json({ message: 'File not found' }, { status: 404 });
+    } catch (err) {
+      return NextResponse.json(
+        { error: "Image file not found" },
+        { status: 404 }
+      );
     }
 
     await fs.unlink(filePath);
-  
-    return Response.json({ message: 'File deleted successfully' });
+
+    await prisma.companies.delete({
+      where: {
+        id: Number(companyId), // Convert string back to BigInt
+      },
+    });
+
+    return NextResponse.json(
+      { message: "Image and company data deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error deleting file:', error);
-    return Response.json({ message: 'Error deleting file' }, { status: 500 });
+    console.error("Error deleting image or company data:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -3,7 +3,7 @@ import prisma from "@/lib/db";
 export async function PUT(req: Request) {
   const { id, content } = await req.json();
   console.log("id", id, content);
-//   const convertTOHtml = textToHtml(content);
+  //   const convertTOHtml = textToHtml(content);
   try {
     const result = await prisma.zodit.update({
       where: {
@@ -16,6 +16,7 @@ export async function PUT(req: Request) {
     return Response.json({ status: "success", result });
   } catch (error) {
     console.log(error);
+    return Response.json({ status: "error", error });
   }
 }
 export async function POST(req: Request) {
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
     return Response.json({ status: "success", result });
   } catch (error) {
     console.log(error);
+    return Response.json({ status: "error", error });
   }
 }
 export async function DELETE(req: Request) {
@@ -44,5 +46,6 @@ export async function DELETE(req: Request) {
     return Response.json({ status: "success", result });
   } catch (error) {
     console.log(error);
+    return Response.json({ status: "error", error });
   }
 }

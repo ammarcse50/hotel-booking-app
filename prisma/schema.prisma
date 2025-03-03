@@ -8,29 +8,96 @@ datasource db {
   relationMode = "prisma"
 }
 
-model users {
-  id                         BigInt    @id @default(autoincrement())
-  company_id                 BigInt
-  username                   String    @db.VarChar(200)
-  username_secondary         String?   @db.VarChar(200)
-  email                      String?   @db.VarChar(255)
-  phone                      String?   @db.VarChar(255)
-  password                   String    @db.VarChar(300)
-  role_id                    BigInt?
-  language_id_default_choice Int?
-  is_lock                    Boolean?  @default(false)
-  is_default_user            Boolean   @default(false)
-  created_at                 DateTime  @default(now())
-  created_by                 BigInt
-  updated_at                 DateTime? @db.DateTime(0)
-  updated_by                 BigInt?
-  is_active                  Boolean   @default(true)
-  is_approved                Boolean   @default(false)
-  is_temporary_password      Boolean   @default(false)
-  invoice                    invoice[]
+model booking {
+  id           Int      @id @default(autoincrement())
+  checkInDate  DateTime
+  checkOutDate DateTime
+  totalPrice   Float
+  userId       BigInt
+  roomId       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
 
-  @@unique([username, company_id], map: "username")
-  @@index([role_id], map: "ref_role_id")
+model companies {
+  id                          BigInt           @id @default(autoincrement())
+  unit_id                     BigInt?
+  parent_id                   BigInt?
+  language_id_default_choice  BigInt?
+  time_zone_list_id           Int
+  currency_list_id            Int
+  name                        String           @db.VarChar(300)
+  alias                       String           @db.VarChar(200)
+  details                     String?          @db.VarChar(500)
+  address                     String?          @db.Text
+  is_super_system_company     Int?             @default(0) @db.TinyInt
+  application_domain          String?          @db.VarChar(100)
+  company_website_url         String?          @db.VarChar(100)
+  company_logo                String?          @db.VarChar(100)
+  phone                       String?          @db.VarChar(20)
+  email                       String?          @db.VarChar(100)
+  created_at                  DateTime?        @db.DateTime(0)
+  created_by                  BigInt?
+  updated_at                  DateTime?        @db.DateTime(0)
+  updated_by                  BigInt?
+  is_active                   Boolean          @default(true)
+  is_default_portal_selection Boolean          @default(false)
+  is_email_notification       Boolean          @default(false)
+  is_sms_notification         Boolean          @default(false)
+  company_images              company_images[]
+}
+
+model company_images {
+  id         BigInt    @id @default(autoincrement())
+  company_id BigInt
+  companyId  companies @relation(fields: [company_id], references: [id])
+  image_url  String?   @db.Text
+  created_at DateTime? @default(now())
+}
+
+model config_details {
+  id               Int                   @id @default(autoincrement()) @db.UnsignedInt
+  company_id       Int
+  config_module_id Int
+  config_key       String                @db.VarChar(100)
+  config_value     String                @db.VarChar(255)
+  type             config_details_type
+  status           config_details_status @default(active)
+  remarks          String?               @db.Text
+  created_at       DateTime              @db.DateTime(0)
+  updated_at       DateTime?             @db.DateTime(0)
+}
+
+model configs {
+  id                       Int            @id @default(autoincrement())
+  name                     String         @db.VarChar(120)
+  is_sms_email_for_invoice Int            @default(0)
+  is_sms_send_for_invoice  Int            @default(0)
+  status                   configs_status @default(active)
+  created_at               DateTime       @db.DateTime(0)
+  updated_at               DateTime?      @db.DateTime(0)
+}
+
+model emailscheduler {
+  id            Int       @id @default(autoincrement())
+  email         String?   @db.VarChar(255)
+  name          String?   @db.VarChar(255)
+  total         Decimal?  @db.Decimal(16, 2)
+  invoice_id    BigInt
+  phone         String?   @db.VarChar(20)
+  attemptCount  Int?      @default(0)
+  status        String?   @db.VarChar(50)
+  lastAttemptAt DateTime? @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @default(now())
+}
+
+model guests {
+  id         Int     @id @default(autoincrement())
+  name       String?
+  email      String?
+  phone      String?
+  meeting_id Int
 }
 
 model invoice {
@@ -72,7 +139,7 @@ model invoice {
   pg_datetime                             DateTime?
   created_at                              DateTime                   @default(now())
   created_by                              BigInt?
-  updated_at                              DateTime?                  @updatedAt
+  updated_at                              DateTime?
   updated_by                              BigInt?
   is_active                               Boolean                    @default(true)
   is_lock                                 Boolean                    @default(false)
@@ -82,8 +149,6 @@ model invoice {
   settlement_date                         DateTime?
   pg_transaction_charge_amount            Decimal?                   @db.Decimal(18, 3)
   pg_transaction_charge_in_percentage     Decimal?                   @db.Decimal(18, 3)
-  user                                    users?                     @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  invoice_details                         invoice_details[]
 
   @@index([invoice_code], map: "Invoice_invoice_code_idx")
 }
@@ -109,57 +174,18 @@ model invoice_details {
   updated_by          BigInt?
   is_active           Boolean   @default(true)
   invoiceId           BigInt?
-  invoices            invoice   @relation(fields: [invoice_id], references: [id])
 
   @@index([invoice_id])
 }
 
-model config_details {
-  id               Int                   @id @default(autoincrement()) @db.UnsignedInt
-  company_id       Int
-  config_module_id Int
-  config_key       String                @db.VarChar(100)
-  config_value     String                @db.VarChar(255)
-  type             config_details_type
-  status           config_details_status @default(active)
-  remarks          String?               @db.Text
-  created_at       DateTime              @db.DateTime(0)
-  updated_at       DateTime?             @db.DateTime(0)
-}
-
-model configs {
-  id                       Int            @id @default(autoincrement())
-  name                     String         @db.VarChar(120)
-  is_sms_email_for_invoice Int            @default(0)
-  is_sms_send_for_invoice  Int            @default(0)
-  status                   configs_status @default(active)
-  created_at               DateTime       @db.DateTime(0)
-  updated_at               DateTime?      @db.DateTime(0)
-}
-
-model emailscheduler {
-  id            Int       @id @default(autoincrement())
-  email         String?   @db.VarChar(255)
-  name          String?   @db.VarChar(255)
-  total         Decimal?  @db.Decimal(16, 2)
-  invoice_id    BigInt
-  phone         String?   @db.VarChar(20)
-  attemptCount  Int?      @default(0)
-  status        String?   @db.VarChar(50)
-  lastAttemptAt DateTime? @default(now())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @default(now()) @updatedAt
-}
-
-model smsscheduler {
-  id       Int    @id @default(autoincrement())
-  content  String
-  contact  String
-  sender   String
-  receiver String
-  total    String
-  userId   String
-  userPass String
+model meetings {
+  id           Int      @id @default(autoincrement())
+  title        String
+  meeting_date DateTime @db.DateTime(0)
+  startTime    DateTime @db.Timestamp(0)
+  endTime      DateTime @db.Timestamp(0)
+  description  String   @db.Text
+  roomId       Int
 }
 
 model menus {
@@ -181,10 +207,70 @@ model menus {
 }
 
 model room {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(500)
+  capacity      Int
+  img           String   @db.VarChar(500)
+  roomNumber    String
+  type          String
+  pricePerNight Float
+  isAvailable   Boolean  @default(true)
+  hotelId       Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+}
+
+model smsscheduler {
   id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(500)
-  capacity Int
-  img      String @db.VarChar(500)
+  content  String
+  contact  String
+  sender   String
+  receiver String
+  total    String
+  userId   String
+  userPass String
+}
+
+model units {
+  id                   BigInt    @id @default(autoincrement())
+  name                 String    @db.VarChar(100)
+  description          String?   @db.Text
+  is_super_system_unit Boolean   @default(false)
+  created_at           DateTime? @db.DateTime(0)
+  created_by           BigInt?
+  updated_at           DateTime? @db.DateTime(0)
+  updated_by           BigInt?
+  is_active            Boolean   @default(true)
+}
+
+model users {
+  id                         BigInt    @id @default(autoincrement())
+  company_id                 BigInt
+  username                   String    @db.VarChar(200)
+  username_secondary         String?   @db.VarChar(200)
+  email                      String?   @db.VarChar(255)
+  phone                      String?   @db.VarChar(255)
+  password                   String    @db.VarChar(300)
+  role_id                    BigInt?
+  language_id_default_choice Int?
+  is_lock                    Boolean?  @default(false)
+  is_default_user            Boolean   @default(false)
+  created_at                 DateTime  @default(now())
+  created_by                 BigInt
+  updated_at                 DateTime? @db.DateTime(0)
+  updated_by                 BigInt?
+  is_active                  Boolean   @default(true)
+  is_approved                Boolean   @default(false)
+  is_temporary_password      Boolean   @default(false)
+
+  @@unique([username, company_id], map: "username")
+  @@index([role_id], map: "ref_role_id")
+}
+
+model zodit {
+  id        Int     @id @default(autoincrement())
+  html      String  @db.Text
+  is_active Boolean @default(true)
 }
 
 enum invoice_invoice_status {
@@ -194,11 +280,6 @@ enum invoice_invoice_status {
   refunded
   draft
   cancel
-}
-
-enum invoice_pg_request_status {
-  pending
-  completed
 }
 
 enum configs_status {
@@ -219,8 +300,7 @@ enum config_details_status {
   inactive
 }
 
-model zodit{
-  id Int @id @default(autoincrement())
-  html String 
-
+enum invoice_pg_request_status {
+  pending
+  completed
 }

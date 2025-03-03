@@ -139,7 +139,7 @@ const CrudZoditBtn = ({ contentZodit }) => {
 
                                         </DialogTrigger>
 
-                                        <DialogContent className="bg-gray-200">
+                                        <DialogContent className="bg-gray-200 w-full">
                                             <div className="">
 
                                                 <div className="h-[70vh] w-[70vh]">
@@ -149,7 +149,7 @@ const CrudZoditBtn = ({ contentZodit }) => {
                                                         value={content}         //This is important
                                                         config={config}         //Only use when you declare some custom configs
                                                         onChange={handleChange} //handle the changes
-                                                        className="w-full h-[50%] mt-10 bg-white"
+                                                        className="w-full h-[50%]  mt-10 bg-white"
                                                     />
                                                     <style>
                                                         {`.jodit-wysiwyg{height:300px !important}`}
@@ -159,7 +159,7 @@ const CrudZoditBtn = ({ contentZodit }) => {
                                             </div>
 
                                         </DialogContent>
-                                      
+
                                     </Dialog>
 
                                 ) : (
