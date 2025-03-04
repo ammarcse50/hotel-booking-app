@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { replacer } from "@/app/utils/replacer";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,8 +33,12 @@ export async function POST(req: NextRequest) {
       "is_email_notification"
     ) as string;
     const is_sms_notification = formData.get("is_sms_notification") as string;
-    const file = formData.get("file") as Blob; // Use Blob instead of File
-    const company_images = formData.getAll("company_images") as Blob[]; // Use Blob instead of File
+
+    const file = formData.get("file") as File;
+    const company_images = formData.getAll("company_images") as File[];
+
+      console.log("file:", file);
+    console.log("company_images:", company_images);
 
     if (
       !name ||
@@ -52,36 +57,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("formData", formData);
-
-    // for company logo
-    const uniqueFileName = `${uuidv4()}-${(file as any).name}`; // Use `as any` to access the `name` property
     const companyLogoDir = "./public/uploads/company_logo";
     const companyImagesDir = "./public/uploads/company_images";
 
     await fs.mkdir(companyLogoDir, { recursive: true });
+    await fs.mkdir(companyImagesDir, { recursive: true });
 
+    const uniqueFileName = `${uuidv4()}-${(file as any).name}`;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
     await fs.writeFile(`${companyLogoDir}/${uniqueFileName}`, buffer);
 
-    // for company images
-    await fs.mkdir(companyImagesDir, { recursive: true });
-
-    const imageUrls = [];
+    const imageUrls: string[] = [];
     for (const image of company_images) {
-      if (image instanceof Blob) {
-        // Ensure it's a Blob object
-        const uniqueImageName = `${uuidv4()}-${(image as any).name}`; // Use `as any` to access the `name` property
-        const imageArrayBuffer = await image.arrayBuffer();
-        const imageBuffer = new Uint8Array(imageArrayBuffer);
-        await fs.writeFile(
-          `${companyImagesDir}/${uniqueImageName}`,
-          imageBuffer
-        );
-        imageUrls.push(uniqueImageName);
-      }
+      const uniqueImageName = `${uuidv4()}-${(image as any).name}`;
+      const imageArrayBuffer = await image.arrayBuffer();
+      const imageBuffer = new Uint8Array(imageArrayBuffer);
+      await fs.writeFile(`${companyImagesDir}/${uniqueImageName}`, imageBuffer);
+      imageUrls.push(uniqueImageName);
     }
+
+    console.log(imageUrls);
 
     const newCompany = await prisma.$transaction(async (prisma) => {
       const company = await prisma.companies.create({
@@ -112,7 +108,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Save company images
       for (const imageUrl of imageUrls) {
         await prisma.company_images.create({
           data: {
@@ -126,9 +121,13 @@ export async function POST(req: NextRequest) {
       return company;
     });
 
-    return NextResponse.json(String(newCompany), { status: 200 });
+    const companySerialize = JSON.stringify(newCompany, replacer);
+
+    return NextResponse.json(companySerialize, {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

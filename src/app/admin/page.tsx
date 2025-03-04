@@ -3,7 +3,7 @@ import React from 'react';
 import fs from 'node:fs/promises';
 import prisma from '@/lib/db';
 import { exo2 } from '@/components/Font_exo2';
-import RoomCard from '@/components/RoomCard';
+import RoomCardAdmin from '@/components/RoomCardAdmin';
 
 const AdminPage = async () => {
   const files = await fs.readdir('./public/uploads/company_logo');
@@ -14,14 +14,14 @@ const AdminPage = async () => {
     <div>
       <AdminHomeUi />
       <h2 className={`text-center mt-20 font-bold text-3xl text-teal-500 ${exo2.className}`}>
-        All Hotels
+        Admin Crud House
       </h2>
       <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
         {hotels.map((hotel) => {
           const imgPath = images.find((image) => image.split('/').pop() === hotel.company_logo) || null;
           return (
             <div key={hotel.id} className="relative px-2 h-auto">
-              <RoomCard
+              <RoomCardAdmin
                 id={hotel.id}
                 name={hotel.name}
                 address={hotel.address}

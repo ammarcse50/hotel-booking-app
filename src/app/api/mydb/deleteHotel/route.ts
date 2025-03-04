@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -9,7 +10,7 @@ export async function DELETE(request: Request) {
     console.log(imgUrl, companyId);
     if (!imgUrl || !companyId) {
       return NextResponse.json(
-        { error: "Image URL and Company ID are required" },
+        { error: "these fields are required" },
         { status: 400 }
       );
     }
@@ -17,7 +18,7 @@ export async function DELETE(request: Request) {
     const fileName = imgUrl.split("/").pop();
 
     if (!fileName) {
-      return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
+      return NextResponse.json({ error: "img url not valid" }, { status: 400 });
     }
 
     const filePath = path.join(

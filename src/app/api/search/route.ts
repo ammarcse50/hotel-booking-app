@@ -1,5 +1,7 @@
+import { replacer } from "@/app/utils/replacer";
 import prisma from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { string } from "zod";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -11,12 +13,9 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
-
-  const parsedQuery = Number(query);
-  const isNumericQuery = !isNaN(parsedQuery);
-
+  console.log("query", query);
   try {
-    const results = await prisma.room.findMany({
+    const results = await prisma.companies.findMany({
       where: {
         OR: [
           {
@@ -25,19 +24,16 @@ export async function GET(req: NextRequest) {
             },
           },
           {
-            img: {
+            alias: {
               contains: query,
             },
           },
-          ...(isNumericQuery
-            ? [
-                {
-                  capacity: {
-                    equals: parsedQuery,
-                  },
-                },
-              ]
-            : []),
+
+          {
+            address: {
+              contains: query,
+            },
+          },
         ],
       },
       orderBy: {
@@ -46,10 +42,13 @@ export async function GET(req: NextRequest) {
       take: 10,
     });
 
-    return NextResponse.json(results);
+    const serializedResults = JSON.stringify(results, replacer);
+    console.log("serializedResults", serializedResults);
+    return new NextResponse(serializedResults, {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error("Error fetching suggestions:", error);
-
+    console.log(error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

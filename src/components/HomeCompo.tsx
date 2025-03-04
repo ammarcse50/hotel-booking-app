@@ -1,11 +1,11 @@
 "use client"
 import React, { useState } from 'react'
-import RoomCard from './RoomCard';
 import axios from 'axios';
+import RoomCard from './RoomCard';
 interface SearchResult {
     id: number;
     name: string;
-    capacity: number;
+    address: string;
 }
 const HomeCompo = ({ hotels, images }) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -13,8 +13,9 @@ const HomeCompo = ({ hotels, images }) => {
     const [selectedRoom, setSelectedRoom] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    console.log("seletecroom is here", selectedRoom);
-    console.log(suggestions);
+    console.log("selected Room", selectedRoom);
+    console.log("hotels", hotels);
+
     const fetchSuggestions = async (query: string) => {
         try {
             setLoading(true);
@@ -78,12 +79,12 @@ const HomeCompo = ({ hotels, images }) => {
             {
 
 
-                hotels && <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
-                    {hotels.map((hotel) => {
+                selectedRoom && <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
+                    {selectedRoom.map((hotel) => {
                         const imgPath = images.find((image) => image.split('/').pop() === hotel.company_logo);
                         return (
                             <div key={hotel.id} className="relative px-2 h-auto">
-                                <RoomCard name={hotel.name} address={hotels.address} img={imgPath} />
+                                <RoomCard name={hotel.name} address={hotel.address} img={imgPath} />
                             </div>
                         );
                     })}
@@ -95,11 +96,11 @@ const HomeCompo = ({ hotels, images }) => {
                 selectedRoom.length === 0 &&
 
                 <div className="grid grid-cols-4 min-w-5xl min-h-5xl gap-4 mt-10">
-                    {hotels.map((room) => {
-                        const imgPath = images.find((image) => image.split('/').pop() === room.img);
+                    {hotels.map((hotel) => {
+                        const imgPath = images.find((image) => image.split('/').pop() === hotel.company_logo);
                         return (
-                            <div key={room.id} className="relative px-2 h-auto">
-                                <RoomCard name={room.name} capacity={room.capacity} img={imgPath} />
+                            <div key={hotel.id} className="relative px-2 h-auto">
+                                <RoomCard name={hotel.name} address={hotel.address} img={imgPath} />
                             </div>
                         );
                     })}
