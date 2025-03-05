@@ -37,9 +37,6 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File;
     const company_images = formData.getAll("company_images") as File[];
 
-      console.log("file:", file);
-    console.log("company_images:", company_images);
-
     if (
       !name ||
       !alias ||
@@ -76,9 +73,7 @@ export async function POST(req: NextRequest) {
       await fs.writeFile(`${companyImagesDir}/${uniqueImageName}`, imageBuffer);
       imageUrls.push(uniqueImageName);
     }
-
     console.log(imageUrls);
-
     const newCompany = await prisma.$transaction(async (prisma) => {
       const company = await prisma.companies.create({
         data: {
@@ -108,12 +103,24 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      const web_gallaries = await prisma.web_galleries.create({
+        data: {
+          company_id: company.id,
+          title: company.name,
+          thumbnail: uniqueFileName,
+          created_at: new Date(),
+          created_by: company.id,
+        },
+      });
+
       for (const imageUrl of imageUrls) {
-        await prisma.company_images.create({
+        await prisma.web_gallery_photos.create({
           data: {
             company_id: company.id,
-            image_url: imageUrl,
+            image: imageUrl,
             created_at: new Date(),
+            galleries_id: web_gallaries.id,
+            created_by: company.id,
           },
         });
       }

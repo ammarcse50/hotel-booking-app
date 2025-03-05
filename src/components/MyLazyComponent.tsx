@@ -16,14 +16,14 @@ interface CustomImageComponentProps {
   onLoad?: () => void;
   onError?: () => void;
   onLoadStart?:
-    | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
-    | undefined;
+  | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
+  | undefined;
   onAbort?:
-    | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
-    | undefined;
+  | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
+  | undefined;
   onScroll?:
-    | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
-    | undefined;
+  | ((event: React.SyntheticEvent<HTMLImageElement, Event>) => void)
+  | undefined;
 }
 
 function MyLazyComponent({
@@ -50,11 +50,11 @@ function MyLazyComponent({
       <Image
         onClick={onClick}
         alt={alt}
-        style={{
-          transform: 'translate3d(0, 0, 0)',
-          width: '100%',
-          height: 'auto',
-        }}
+        // style={{
+        //   transform: 'translate3d(0, 0, 0)',
+        //   width: '100%',
+        //   height: 'auto',
+        // }}
         className="brightness-90 group-hover:brightness-110 rounded-lg transition transform"
         onError={() => setSrcState('/place-holder.webp')} // fallback image
         blurDataURL={blurDataUrl}

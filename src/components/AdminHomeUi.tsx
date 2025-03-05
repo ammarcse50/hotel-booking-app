@@ -11,12 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from 'next/image';
+import MyLazyComponent from './MyLazyComponent';
+import { useRouter } from 'next/navigation';
 
 const AdminHomeUi = () => {
   const [file, setFile] = useState(null);
   const [selectedUnit, setSelectedUnit] = useState([]);
   const [companyImages, setCompanyImages] = useState([]);
+
+  const router = useRouter();
 
   console.log("company Images", companyImages);
 
@@ -24,15 +27,12 @@ const AdminHomeUi = () => {
 
   const handleMultiFileChange = (e: any) => {
     const files = e.target.files;
-
     setCompanyImages([...companyImages, ...files]);
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFile(file);
   };
-
-
   const getAllUnits = async () => {
     try {
       const response = await fetch('/api/mydb/getAllUnits');
@@ -76,7 +76,7 @@ const AdminHomeUi = () => {
     if (file) {
       formData.append('file', file);
     }
-    companyImages.forEach((image, index) => {
+    companyImages.forEach((image) => {
       formData.append(`company_images`, image);
     });
     try {
@@ -90,11 +90,13 @@ const AdminHomeUi = () => {
         form.reset();
         setFile(null);
         setCompanyImages([]);
+        router.push('/admin');
+
       } else {
         alert('Failed to upload data');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.log(error);
     }
   };
 
@@ -158,7 +160,7 @@ const AdminHomeUi = () => {
             <input type="file" name="file" onChange={handleFileChange} className="px-2" required />
           </label>
           <div className='m-3 flex gap-2'>
-            {file && <Image alt='img' loading='lazy' width={30} height={30} src={URL.createObjectURL(file)} />}
+            {file && <MyLazyComponent alt='img' width={30} height={30} src={URL.createObjectURL(file)} />}
           </div>
         </div>
 
@@ -168,8 +170,8 @@ const AdminHomeUi = () => {
             <input type="file" name="company_images" onChange={handleMultiFileChange} className="px-2" multiple required />
           </label>
           <div className='m-3 flex gap-2'>
-            {companyImages.map((link, index) => (
-              <Image key={index} alt='img' loading='lazy' width={30} height={30} src={link} />
+            {companyImages?.map((link, index) => (
+              <MyLazyComponent key={index} alt='img' width={30} height={30} src={URL.createObjectURL(link)} />
             ))}
           </div>
         </div>

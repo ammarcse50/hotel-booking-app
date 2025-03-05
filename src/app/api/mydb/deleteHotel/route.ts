@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -7,7 +6,7 @@ import prisma from "@/lib/db";
 export async function DELETE(request: Request) {
   try {
     const { imgUrl, companyId } = await request.json();
-    console.log(imgUrl, companyId);
+
     if (!imgUrl || !companyId) {
       return NextResponse.json(
         { error: "these fields are required" },
@@ -21,6 +20,32 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "img url not valid" }, { status: 400 });
     }
 
+    const allImagesHotel = await prisma.web_gallery_photos.findMany({
+      where: {
+        company_id: Number(companyId),
+      },
+      select: {
+        image: true,
+      },
+    });
+
+    for (const image of allImagesHotel) {
+      const filePathImages = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "company_images",
+        image.image
+      );
+
+      try {
+        await fs.access(filePathImages);
+        await fs.unlink(filePathImages);
+      } catch (err) {
+        console.log(`Error deleting image ${image.image}:`, err);
+      }
+    }
+
     const filePath = path.join(
       process.cwd(),
       "public",
@@ -31,23 +56,32 @@ export async function DELETE(request: Request) {
 
     try {
       await fs.access(filePath);
+      await fs.unlink(filePath);
     } catch (err) {
       return NextResponse.json(
-        { error: "Image file not found" },
+        { error: "Logo image file not found" },
         { status: 404 }
       );
     }
 
-    await fs.unlink(filePath);
-
     await prisma.companies.delete({
       where: {
-        id: Number(companyId), // Convert string back to BigInt
+        id: Number(companyId),
+      },
+    });
+    await prisma.web_galleries.deleteMany({
+      where: {
+        id: Number(companyId),
+      },
+    });
+    await prisma.web_gallery_photos.deleteMany({
+      where: {
+        company_id: Number(companyId),
       },
     });
 
     return NextResponse.json(
-      { message: "Image and company data deleted successfully" },
+      { message: "Images and company data deleted successfully" },
       { status: 200 }
     );
   } catch (error) {

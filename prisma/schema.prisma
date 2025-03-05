@@ -20,39 +20,32 @@ model booking {
 }
 
 model companies {
-  id                          BigInt           @id @default(autoincrement())
+  id                          BigInt               @id @default(autoincrement())
   unit_id                     BigInt?
   parent_id                   BigInt?
   language_id_default_choice  BigInt?
   time_zone_list_id           Int
   currency_list_id            Int
-  name                        String           @db.VarChar(300)
-  alias                       String           @db.VarChar(200)
-  details                     String?          @db.VarChar(500)
-  address                     String?          @db.Text
-  is_super_system_company     Int?             @default(0) @db.TinyInt
-  application_domain          String?          @db.VarChar(100)
-  company_website_url         String?          @db.VarChar(100)
-  company_logo                String?          @db.VarChar(100)
-  phone                       String?          @db.VarChar(20)
-  email                       String?          @db.VarChar(100)
-  created_at                  DateTime?        @db.DateTime(0)
+  name                        String               @db.VarChar(300)
+  alias                       String               @db.VarChar(200)
+  details                     String?              @db.VarChar(500)
+  address                     String?              @db.Text
+  is_super_system_company     Int?                 @default(0) @db.TinyInt
+  application_domain          String?              @db.VarChar(100)
+  company_website_url         String?              @db.VarChar(100)
+  company_logo                String?              @db.VarChar(100)
+  phone                       String?              @db.VarChar(20)
+  email                       String?              @db.VarChar(100)
+  created_at                  DateTime?            @db.DateTime(0)
   created_by                  BigInt?
-  updated_at                  DateTime?        @db.DateTime(0)
+  updated_at                  DateTime?            @db.DateTime(0)
   updated_by                  BigInt?
-  is_active                   Boolean          @default(true)
-  is_default_portal_selection Boolean          @default(false)
-  is_email_notification       Boolean          @default(false)
-  is_sms_notification         Boolean          @default(false)
-  company_images              company_images[]
-}
-
-model company_images {
-  id         BigInt    @id @default(autoincrement())
-  company_id BigInt
-  companyId  companies @relation(fields: [company_id], references: [id])
-  image_url  String?   @db.Text
-  created_at DateTime? @default(now())
+  is_active                   Boolean              @default(true)
+  is_default_portal_selection Boolean              @default(false)
+  is_email_notification       Boolean              @default(false)
+  is_sms_notification         Boolean              @default(false)
+  web_galleries               web_galleries[]
+  web_gallery_photos          web_gallery_photos[]
 }
 
 model config_details {
@@ -271,6 +264,41 @@ model zodit {
   id        Int     @id @default(autoincrement())
   html      String  @db.Text
   is_active Boolean @default(true)
+}
+
+model web_galleries {
+  id                 Int                  @id @default(autoincrement())
+  company_id         BigInt
+  thumbnail          String?              @db.VarChar(200)
+  title              String               @db.VarChar(200)
+  description        String?              @db.VarChar(500)
+  publish_date       DateTime?            @db.DateTime(0)
+  is_published       Boolean              @default(false)
+  created_at         DateTime             @db.DateTime(0)
+  created_by         BigInt
+  updated_at         DateTime?            @db.DateTime(0)
+  updated_by         BigInt?
+  is_active          Boolean              @default(true)
+  companies          companies            @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  web_gallery_photos web_gallery_photos[]
+}
+
+model web_gallery_photos {
+  id           Int           @id @default(autoincrement())
+  company_id   BigInt
+  title        String?       @db.VarChar(200)
+  description  String?       @db.VarChar(500)
+  galleries_id Int
+  image        String        @db.VarChar(200)
+  publish_date DateTime?     @db.DateTime(0)
+  is_published Boolean?      @default(false)
+  created_at   DateTime      @db.DateTime(0)
+  created_by   BigInt
+  updated_at   DateTime?     @db.DateTime(0)
+  updated_by   BigInt?
+  is_active    Boolean       @default(true)
+  companies    companies     @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  galleries    web_galleries @relation(fields: [galleries_id], references: [id], onDelete: Cascade)
 }
 
 enum invoice_invoice_status {
